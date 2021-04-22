@@ -8,8 +8,7 @@ var zahirr = db.get("zahirr");
 	console.log('')  
 }
  
-var creatorList = ['@only_fxc7'];
-var creator = creatorList[Math.floor(Math.random() * creatorList.length)]; 
+var creator = "@only_fxc7"
 var secure = require('ssl-express-www');
 var cors = require('cors');
 var fetch = require('node-fetch');
@@ -178,21 +177,7 @@ router.use(favicon(__path + "/views/favicon.ico"));
 
 const listkey = ["Fxc7", "manogay"];
 
-const ceemde = JSON.parse(fs.readFileSync(__path +'/tmp/totalhit.json'))
-
-/**
- * for add total command
- * @params {direktori} 
- * dah lah
-**/
-const cmdadd = () => {
-	ceemde[0].totalcmd += 1
-	fs.writeFileSync(__path +'/tmp/totalhit.json', JSON.stringify(ceemde))
-}
-
- if (router) cmdadd()
-
-router.post("/apikey", (req, res, next) => {
+router.post("/apikey", async (req, res, next) => {
   const key = req.query.key;
   if(listkey.includes(key)) {
     res.json({
@@ -208,10 +193,10 @@ router.post("/apikey", (req, res, next) => {
 
 // delete apikey
 
-router.delete("/apikey", (req, res, next) => {
+router.delete("/apikey", async(req, res, next) => {
 	const key = req.query.delete;
 	if(listkey.includes(key)) {
-		res.send({
+		res.json({
 			message: 'apikey tidak ada sebelumnya'
 			})
 			} else {
@@ -265,11 +250,11 @@ router.get('/music/spotify', async(req, res, next) => {
   res.json(loghandler.invalidKey)
 }
 })
-router.get('/download/ytmp3', (req, res, next) => {
+router.get('/download/ytmp3', async(req, res, next) => {
   const url = req.query.url;
   const apikey = req.query.apikey;
-  if(!url) return res.send(loghandler.noturl)
-  if(!apikey) return res.send(loghandler.notparam)
+  if(!url) return res.json(loghandler.noturl)
+  if(!apikey) return res.json(loghandler.notparam)
   if(listkey.includes(apikey)){
   ytDonlodMp3(url)
     .then((result) => {
@@ -289,12 +274,12 @@ router.get('/download/ytmp3', (req, res, next) => {
     }
 });
 
-router.get('/download/ytmp4', (req, res, next) => {
+router.get('/download/ytmp4', async(req, res, next) => {
   const url = req.query.url;
   const apikey = req.query.apikey;
 
-  if(!url) return res.send(loghandler.noturl)
-  if(!apikey) return res.send(loghandler.notparam)
+  if(!url) return res.json(loghandler.noturl)
+  if(!apikey) return res.json(loghandler.notparam)
   if(listkey.includes(apikey)){
   ytDonlodMp4(url)
     .then((result) => {
@@ -313,63 +298,68 @@ router.get('/download/ytmp4', (req, res, next) => {
     }
 });
 
-router.get("/yt/playmp3", (req, res, next) => {
+router.get("/yt/playmp3", async(req, res, next) => {
     const query = req.query.query;
     const apikey = req.query.apikey;
     
-    if(!query) return res.send(loghandler.notquery)
-    if(!apikey) return res.send(loghandler.notparam)
+    if(!query) return res.json(loghandler.notquery)
+    if(!apikey) return res.json(loghandler.notparam)
     if(listkey.includes(apikey)){
     ytPlayMp3(query)
         .then((result) => {
             res.json(result);
         })
         .catch((error) => {
-            res.send(error);
+            res.json(error);
         });
       } else {
-      res.send(loghandler.invalidKey)
+      res.json(loghandler.invalidKey)
       }
 });
 
-router.get("/yt/playmp4", (req, res, next) => {
+router.get("/yt/playmp4", async(req, res, next) => {
 
     const query = req.query.query;
 
     const apikey = req.query.apikey;
     
-    if(!query) return res.send(loghandler.notquery)
-    if(!apikey) return res.send(loghandler.notparam)
+    if(!query) return res.json(loghandler.notquery)
+    if(!apikey) return res.json(loghandler.notparam)
     if(listkey.includes(apikey)){
     ytPlayMp4(query)
         .then((result) => {
             res.json(result);
         })
         .catch((error) => {
-            res.send(error);
+            res.json(error);
         });
       } else {
-      res.send(loghandler.invalidKey)
+      res.json(loghandler.invalidKey)
       }
 });
 
 
-router.get('/yt/search', (req, res, next) => {
+router.get('/yt/search', async(req, res, next) => {
     const query = req.query.query;
     const apikey = req.query.apikey;
     
-    if(!query) return res.send(loghandler.notquery)
-    if(!apikey) return res.send(loghandler.notparam)
+    if(!query) return res.json(loghandler.notquery)
+    if(!apikey) return res.json(loghandler.notparam)
     if(listkey.includes(apikey)){
     ytSearch(query)
         .then((result) => {
-            res.json(result)
+            res.json({
+              status: true,
+              code: 200,
+              creator: `${creator}`,
+              result
+            })
         })
         .catch((error) => {
-            res.send(error);
+            res.json(error);
         });
       } else {
-     res.send(loghandler.invalidKey)
+     res.json(loghandler.invalidKey)
      }
 });
 
@@ -389,11 +379,11 @@ res.json(loghandler.invalidKey)
 }
 })
 
-router.get('/download/ig', (req, res, next) => {
+router.get('/download/ig', async(req, res, next) => {
   const url = req.query.url;
   const apikey = req.query.apikey;
-  if(!url) return res.send(loghandler.noturl)
-  if(!apikey) return res.send(loghandler.notparam)
+  if(!url) return res.json(loghandler.noturl)
+  if(!apikey) return res.json(loghandler.notparam)
   if(listkey.includes(apikey)){
   igDownload(url)
     .then((data) => {
@@ -409,10 +399,10 @@ router.get('/download/ig', (req, res, next) => {
       res.json(result)
     })
     .catch((err) => {
-      res.send(err);
+      res.json(err);
     });
     } else {
-    	res.send(loghandler.invalidKey)
+    	res.json(loghandler.invalidKey)
     }
 });
 
@@ -472,15 +462,15 @@ res.json(loghandler.invalidKey)
 }
 })
 
-router.get('/stalk/ig', (req, res, next) => {
+router.get('/stalk/ig', async(req, res, next) => {
   const username = req.query.username;
   const apikey = req.query.apikey;
-  if(!username) return res.send(loghandler.notusername)
-  if(!apikey) return res.send(loghandler.notparam)
+  if(!username) return res.json(loghandler.notusername)
+  if(!apikey) return res.json(loghandler.notparam)
   if(listkey.includes(apikey)){
   igStalk(username)
     .then((result) => {
-      res.send({
+      res.json({
         status : true,
         code: 200,
         creator : `${creator}`,
@@ -488,10 +478,10 @@ router.get('/stalk/ig', (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.send(err);
+      res.json(err);
     });
     } else {
-    	res.send(loghandler.invalidKey)
+    	res.json(loghandler.invalidKey)
     }
 });
 
@@ -547,7 +537,7 @@ res.json(loghandler.invalidKey)
 })
 
 
-router.get('/jadwal-bioskop', (req, res, next) => {
+router.get('/jadwal-bioskop', async(req, res, next) => {
 var Apikey = req.query.apikey
 
 if(!Apikey) return res.json(loghandler.notparam)
@@ -1158,7 +1148,7 @@ router.get('/wallpaper/cyberspace', async (req, res, next) => {
   const randCc = Cc[Math.floor(Math.random() * Cc.length)]
   data = await fetch(randCc).then(v => v.buffer())
   await fs.writeFileSync(__path +'/tmp/CyberSpace.jpeg', data)
-  res.sendFile(__path +'/tmp/CyberSpace.jpeg')
+  res.jsonFile(__path +'/tmp/CyberSpace.jpeg')
 } else {
 res.json(loghandler.invalidKey)
 }
@@ -1175,7 +1165,7 @@ const randTech = Techno[Math.floor(Math.random() * Techno.length)]
 //tansole.log(randTech)
 data = await fetch(randTech).then(v => v.buffer())
 await fs.writeFileSync(__path +'/tmp/techno.jpeg', data)
-res.sendFile(__path +'/tmp/techno.jpeg')
+res.jsonFile(__path +'/tmp/techno.jpeg')
 } else {
 res.json(loghandler.invalidKey)
 }
@@ -1192,7 +1182,7 @@ router.get('/wallpaper/muslim', async (req, res, next) => {
   const randMuslim = Muslim[Math.floor(Math.random() * Muslim.length)];
   data = await fetch(randMuslim).then(v => v.buffer());
   await fs.writeFileSync(__path +'/tmp/muslim.jpeg', data)
-  res.sendFile(__path +'/tmp/muslim.jpeg');
+  res.jsonFile(__path +'/tmp/muslim.jpeg');
 } else {
 res.json(loghandler.invalidKey)
 }
@@ -1209,7 +1199,7 @@ router.get('/wallpaper/programming', async (req, res, next) => {
   const randProgam = Progam[Math.floor(Math.random() * Progam.length)];
   data = await fetch(randProgam).then(v => v.buffer())
   await fs.writeFileSync(__path +'/tmp/Programming.jpeg', data)
-  res.sendFile(__path +'/tmp/Programming.jpeg')
+  res.jsonFile(__path +'/tmp/Programming.jpeg')
 } else {
 res.json(loghandler.invalidKey)
 }
@@ -1226,7 +1216,7 @@ router.get('/wallpaper/pegunungan', async (req, res, next) => {
   const randMount = Mount[Math.floor(Math.random() * Mount.length)];
   data = await fetch(randMount).then(v => v.buffer());
   await fs.writeFileSync(__path +'/tmp/Mountain.jpeg', data)
-  res.sendFile(__path+ '/tmp/Mountain.jpeg');
+  res.jsonFile(__path+ '/tmp/Mountain.jpeg');
 } else {
 res.json(loghandler.invalidKey)
 }
@@ -1588,7 +1578,7 @@ res.json(loghandler.invalidKey)
 }
 })
 
-router.get('/anime/loli', (req, res, next) => {
+router.get('/anime/loli', async(req, res, next) => {
     var apikey = req.query.apikey
     if (!apikey) return res.json(loghandler.notparam)
     if(listkey.includes(apikey)){
@@ -1701,7 +1691,7 @@ router.get('/kuis/tebakGambar', async (req, res, next) => {
 
 
 
-router.get("/photooxy/shadow", (req, res, next) => {
+router.get("/photooxy/shadow", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1725,7 +1715,7 @@ router.get("/photooxy/shadow", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/romantic", (req, res, next) => {
+router.get("/photooxy/romantic", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1751,7 +1741,7 @@ router.get("/photooxy/romantic", (req, res, next) => {
 
 // @PHOTOOXY
 
-router.get("/photooxy/smoke", (req, res, next) => {
+router.get("/photooxy/smoke", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1775,7 +1765,7 @@ router.get("/photooxy/smoke", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/burn-papper", (req, res, next) => {
+router.get("/photooxy/burn-papper", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1799,7 +1789,7 @@ router.get("/photooxy/burn-papper", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/naruto", (req, res, next) => {
+router.get("/photooxy/naruto", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1823,7 +1813,7 @@ router.get("/photooxy/naruto", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/love-message", (req, res, next) => {
+router.get("/photooxy/love-message", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1847,7 +1837,7 @@ router.get("/photooxy/love-message", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/message-under-grass", (req, res, next) => {
+router.get("/photooxy/message-under-grass", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1871,7 +1861,7 @@ router.get("/photooxy/message-under-grass", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/glitch", (req, res, next) => {
+router.get("/photooxy/glitch", async(req, res, next) => {
   const text1 = req.query.text1;
   const text2 = req.query.text2;
   const apikey = req.query.apikey;
@@ -1897,7 +1887,7 @@ router.get("/photooxy/glitch", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/double-heart", (req, res, next) => {
+router.get("/photooxy/double-heart", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1921,7 +1911,7 @@ router.get("/photooxy/double-heart", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/coffe-cup", (req, res, next) => {
+router.get("/photooxy/coffe-cup", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1945,7 +1935,7 @@ router.get("/photooxy/coffe-cup", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/love-text", (req, res, next) => {
+router.get("/photooxy/love-text", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -1969,7 +1959,7 @@ router.get("/photooxy/love-text", (req, res, next) => {
     }
 });
 
-router.get("/photooxy/butterfly", (req, res, next) => {
+router.get("/photooxy/butterfly", async(req, res, next) => {
   const text1 = req.query.text;
   const apikey = req.query.apikey;
   if(!text1) return res.json(loghandler.nottext1)
@@ -2330,7 +2320,7 @@ router.get('/maker/dadu', async (req, res, next) => {
       hasil = 'https://www.random.org/dice/dice' + random + '.png'
      data = await fetch(hasil).then(v => v.buffer())
          await fs.writeFileSync(__path +'/tmp/dadu.png', data)
-        res.sendFile(__path+'/tmp/dadu.png')
+        res.jsonFile(__path+'/tmp/dadu.png')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2346,7 +2336,7 @@ router.get('/asupan', async (req, res, next) => {
     let hasil = Asupan.asupan;
     data = await fetch(hasil).then(v => v.buffer())
     await fs.writeFileSync(__path +'/tmp/asupan.mp4', data)
-    res.sendFile(__path +'/tmp/asupan.mp4')
+    res.jsonFile(__path +'/tmp/asupan.mp4')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2364,7 +2354,7 @@ router.get("/maker/nulis", async (req, res, next) => {
     let hasil = 'https://api.zeks.xyz/api/nulis?text='+ text +'&apikey=apivinz' 
     data = await fetch(hasil).then(v => v.buffer())
     await fs.writeFileSync(__path +'/tmp/nulis.jpeg', data)
-    res.sendFile(__path +'/tmp/nulis.jpeg')
+    res.jsonFile(__path +'/tmp/nulis.jpeg')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2381,7 +2371,7 @@ data = await fetch(`https://api.areltiyan.site/sticker_maker?text=${encodeURICom
          base64 = data.base64
          var buffer = base64.slice(22)
          await fs.writeFileSync(__path +`/tmp/ttp.png`, buffer, 'base64')
-        res.sendFile(__path+'/tmp/ttp.png')
+        res.jsonFile(__path+'/tmp/ttp.png')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2398,7 +2388,7 @@ router.get('/maker/attp', async(req, res, next) => {
   let hasil = 'https://alpin-api-2021.herokuapp.com/api/attp?text='+ text +'&apikey=alpin1'
   data = await fetch(hasil).then(v => v.buffer())
   await fs.writeFileSync(__path +'/tmp/attp.gif', data)
-  res.sendFile(__path +'/tmp/attp.gif')
+  res.jsonFile(__path +'/tmp/attp.gif')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2415,7 +2405,7 @@ router.get('/maker/harta-tahta', async(req, res, next) => {
   let hasil = 'https://api.zeks.xyz/api/hartatahta?text='+ text +'&apikey=apivinz' 
   data = await fetch(hasil).then(v => v.buffer())
   await fs.writeFileSync(__path +'/tmp/tahta.jpg', data)
-  res.sendFile(__path +'/tmp/tahta.jpg')
+  res.jsonFile(__path +'/tmp/tahta.jpg')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2430,7 +2420,7 @@ router.get('/maker/skatch', async(req, res, next) => {
   let hasil = `https://lindow-api.herokuapp.com/api/sketcheffect?img=${url}&apikey=LindowApi`
   data = await fetch(hasil).then(v => v.buffer())
          await fs.writeFileSync(__path +'/tmp/skatch.jpeg', data)
-        res.sendFile(__path+'/tmp/skatch.jpeg')
+        res.jsonFile(__path+'/tmp/skatch.jpeg')
   } else {
     res.json(loghandler.invalidKey)
   }
@@ -2500,8 +2490,7 @@ router.get('/cekapikey', async(req, res, next) => {
       status: 'active',
       creator: `${creator}`,
       apikey: `${apikey}`,
-      request: ceemde[0].totalcmd,
-      message: 'apikey active'
+      message: 'APIKEY ACTIVE'
     })
   } else {
     res.json(loghandler.invalidKey)
